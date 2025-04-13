@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Honeypot Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #121212;
+            color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .dashboard-container {
+            margin-top: 60px;
+        }
+        .card {
+            background-color: #1f1f1f;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+        }
+        .card h5, .card h6 {
+            color: #17a2b8;
+        }
+        .logout-btn {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+        .logout-btn:hover {
+            background-color: #e84343;
+        }
+        .list-group-item {
+            background-color: #1f1f1f;
+            border: 1px solid #343a40;
+            color: #dee2e6;
+        }
+        .alert {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container dashboard-container">
+        <div class="row">
+            <div class="col-12 text-center mb-4">
+                <h2><i class="fas fa-shield-alt"></i> Honeypot Dashboard</h2>
+            </div>
+            <div class="col-md-8 offset-md-2">
+                <div class="card p-4">
+                    <h5><i class="fas fa-chart-bar"></i> Total Access Logs: <span class="badge bg-info">{{ total }}</span></h5>
+
+                    <h6 class="mt-4"><i class="fas fa-network-wired"></i> Top IPs:</h6>
+                    <ul class="list-group mb-3">
+                        {% for ip, count in top_ips %}
+                            <li class="list-group-item">{{ ip }} - <strong>{{ count }}</strong> accesses</li>
+                        {% endfor %}
+                    </ul>
+
+                    <h6><i class="fas fa-file-alt"></i> Top Accessed Files:</h6>
+                    <ul class="list-group mb-3">
+                        {% for file, count in top_files %}
+                            <li class="list-group-item">{{ file }} - <strong>{{ count }}</strong> accesses</li>
+                        {% endfor %}
+                    </ul>
+
+                    <!-- Real-Time Alerts -->
+                    <h6><i class="fas fa-exclamation-triangle"></i> Real-Time Threat Intelligence:</h6>
+                    <div class="mb-3">
+                        {% for alert in alerts %}
+                            <div class="alert alert-{{ alert.level.lower() }}">
+                                <strong>{{ alert.level }}</strong> - {{ alert.message }} ({{ alert.time.strftime('%Y-%m-%d %H:%M:%S') }})
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <form action="{{ url_for('logout') }}" method="POST" class="text-end">
+                        <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
